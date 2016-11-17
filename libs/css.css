@@ -1,0 +1,14 @@
+﻿body {
+    margin-top:60px;
+}
+
+.radio{
+    margin-left:35px;
+    position:relative;
+}
+
+.lblSelectCurso{
+    font-family: 'Roboto', sans-serif;
+    font-size:18px;
+}
+
