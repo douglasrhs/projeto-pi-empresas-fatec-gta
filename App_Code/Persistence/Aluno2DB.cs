@@ -1,6 +1,7 @@
 ﻿using PIxEmpresas.App_Code.Classes;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 
@@ -38,5 +39,25 @@ namespace PIxEmpresas.App_Code.Persistence
             return resultStatus;
         }
 
+        public static bool Exists(int ra)
+        {
+            string query = "SELECT * FROM alu_aluno WHERE alu_ra = ?ra;";
+            
+            DBHelper dbHelper;
+            bool retorno;
+            try
+            {
+                dbHelper = new DBHelper(query);
+                dbHelper.AddParameter("?ra", ra);
+                retorno = Convert.ToBoolean(dbHelper.Command.ExecuteScalar());
+                dbHelper.Dispose();
+            }
+            catch
+            {
+                retorno = false;
+            }
+
+            return retorno;
+        }
     }
 }

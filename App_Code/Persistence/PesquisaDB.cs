@@ -115,7 +115,7 @@ namespace PIxEmpresas.App_Code.Persistence
 
         public static DataSet SelectByCurso(int codigo)
         {
-            string query = "SELECT *, CONCAT(ans_semestre,' - ',ans_ano) as anosemestre FROM psq_pesquisa LEFT JOIN emp_empresa USING(emp_codigo) LEFT JOIN ans_anosemestre USING(ans_codigo) LEFT JOIN cur_cursos USING(cur_codigo) WHERE cur_codigo = ?codigo ORDER BY anosemestre DESC;";
+            string query = "SELECT *, CONCAT(ans_semestre,' - ',ans_ano) as anosemestre,(SELECT group_concat(alu_nome separator '<br/>') FROM psa_pesquisa_aluno a INNER JOIN alu_aluno USING(alu_ra) WHERE a.psq_codigo = b.psq_codigo) as alunos, (SELECT group_concat(pro_nome separator '<br/>') FROM psp_pesquisa_professor a INNER JOIN pro_professor USING(pro_matricula) WHERE a.psq_codigo = b.psq_codigo) as professores FROM psq_pesquisa b LEFT JOIN emp_empresa USING(emp_codigo) LEFT JOIN ans_anosemestre USING(ans_codigo) LEFT JOIN cur_cursos USING(cur_codigo) WHERE cur_codigo = ?codigo ORDER BY anosemestre DESC ;";
 
             DataSet dataSet = new DataSet();
             DBHelper dbHelper;

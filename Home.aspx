@@ -18,7 +18,8 @@
             <Columns>
                 <asp:BoundField DataField="anosemestre" HeaderText="Semestre/Ano" />
                 <asp:BoundField DataField="emp_nomefantasia" HeaderText="Empresa" />
-                <asp:BoundField DataField="psq_contato" HeaderText="Contato" />
+                <asp:BoundField DataField="alunos" HeaderText="Aluno(s)" HtmlEncode="false"/>
+                <asp:BoundField DataField="professores" HeaderText="Professor(es)" HtmlEncode="false" />
             </Columns>
         </asp:GridView>
     </div>

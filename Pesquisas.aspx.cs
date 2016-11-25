@@ -55,65 +55,74 @@ public partial class Pesquisas : System.Web.UI.Page
 
     protected void btnConfirmar_Click(object sender, EventArgs e)
     {
-        StringBuilder str = new StringBuilder();
         Pesquisa pesquisa = new Pesquisa();
 
         pesquisa.Tipo = Convert.ToString(rblTipo.SelectedItem.Value);
         pesquisa.Implementacao = Convert.ToString(rblImplementacao.SelectedItem.Value);
-
         pesquisa.Descricao = txbProposta.Text;
         pesquisa.Contato = txbContato.Text;
 
         Empresa emp = new Empresa();
         emp.Codigo = Convert.ToInt32(ddlEmpresa.SelectedValue);
         pesquisa.Empresa = emp;
+
         Curso2 cur = new Curso2();
         cur.Codigo = Convert.ToInt32(ddlCurso.SelectedValue);
         pesquisa.Curso = cur;
+
         Anosemestre ans = new Anosemestre();
         ans.codigo = Convert.ToInt32(ddlAnoSemestre.SelectedValue);
         pesquisa.Anosemestre = ans;
-        str.Clear();
+
         if (PesquisaDB.Insert(pesquisa) == -2)
         {
-            str.Append("<script>MensagemSucesso();</script>");
+            Response.Write("<script>alert('Falha ao realizar o procedimento \nVerifique a causa do erro e tente novamente');</script>"); 
         }
         else
         {
-            str.Append("<script>MensagemFalha();</script>");
-        }
-        Response.Write(str.ToString());
-        pesquisa.Codigo = PesquisaDB.SelectLastInsertCod();
-
-        //Checando a lista de Alunos e Adicionando no Banco
-        foreach (ListItem item in LBAlunosOk.Items)
-        {
-            Aluno2 aluno = new Aluno2();
-            aluno.RA = Convert.ToInt32(item.Value);
-            aluno.Nome = item.Text;
-
-            if (Aluno2DB.Insert(aluno) == -2)
-                return;
-
-            if (PesquisaDB.InsertPSA(pesquisa.Codigo, aluno.RA) == -2)
-                return;
-        }
-
-        foreach (ListItem item in LBProfOk.Items)
-        {
-            Professor2 prof = new Professor2();
-            prof.Matricula = item.Value;
-            prof.Nome = item.Text;
             
-            if (Professor2DB.Insert(prof) == -2)
-                return;
 
-            if (PesquisaDB.InsertPSP(pesquisa.Codigo, prof.Matricula) == -2)
-                return;
+            pesquisa.Codigo = PesquisaDB.SelectLastInsertCod();
+            int resultOperation = 0;
+            //Checando a lista de Alunos e Adicionando no Banco
+            foreach (ListItem item in LBAlunosOk.Items)
+            {
+                Aluno2 aluno = new Aluno2();
+                aluno.RA = Convert.ToInt32(item.Value);
+                aluno.Nome = item.Text;
+                if(Aluno2DB.Exists(aluno.RA) == false)
+                    resultOperation += Aluno2DB.Insert(aluno);
+
+                resultOperation += PesquisaDB.InsertPSA(pesquisa.Codigo, aluno.RA);
+            }
+
+            foreach (ListItem item in LBProfOk.Items)
+            {
+                Professor2 prof = new Professor2();
+                prof.Matricula = item.Value;
+                prof.Nome = item.Text;
+                if (Professor2DB.Exists(prof.Matricula) == false)
+                    resultOperation += Professor2DB.Insert(prof);
+
+                resultOperation += PesquisaDB.InsertPSP(pesquisa.Codigo, prof.Matricula);                  
+            }
         }
 
-        
-       
+
+        //limpando os campos após envio dos dados
+
+        txbProposta.Text = "";
+        txbContato.Text = "";
+        rblImplementacao.ClearSelection();
+        rblTipo.ClearSelection();
+        LBAlunosOk.Items.Clear();
+        LBProcAlunos.Items.Clear();
+        LBProcProf.Items.Clear();
+        LBProfOk.Items.Clear();
+
+        Response.Redirect("/Home.aspx");
+        Response.Write("<script>alert('Sucesso ao realizar o procedimento \nProssiga!');</script>");
+
 
     }
 

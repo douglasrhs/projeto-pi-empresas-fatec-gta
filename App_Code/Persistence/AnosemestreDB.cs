@@ -11,7 +11,7 @@ namespace PIxEmpresas.App_Code.Persistence
     {
         public static DataSet SelectAnoSemestre()
         {
-            string query = "SELECT ans_codigo as codigo, ans_semestre as semestre, ans_ano as ano, CONCAT(ans_semestre,' - ',ans_ano) as anosemestre FROM ans_anosemestre ORDER BY codigo;";
+            string query = "SELECT ans_codigo as codigo, ans_semestre as semestre, ans_ano as ano, CONCAT(ans_semestre,' - ',ans_ano) as anosemestre FROM ans_anosemestre ORDER BY codigo DESC;";
 
             DataSet dataSet = new DataSet();
             DBHelper dbHelper;
